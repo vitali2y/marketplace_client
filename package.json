@@ -1,0 +1,36 @@
+{
+  "name": "marketplace_client",
+  "version": "0.0.1",
+  "description": "Marketplace Client",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "alice": "cat ./config.toml | ./node_modules/.bin/coffee ./client.coffee",
+    "bob": "cat ./config_bob.toml | ./node_modules/.bin/coffee ./client.coffee",
+    "james": "cat ./config_james.toml | ./node_modules/.bin/coffee ./client.coffee",
+    "ragnar": "./node_modules/.bin/coffee ./client.coffee",
+    "release_bin": "./scripts/release_bin.sh; if [ $? -ne 0 ]; then echo 'failed!!!'; exit 9; fi; echo 'released'"
+  },
+  "keywords": [
+    "marketplace",
+    "p2p",
+    "PoC"
+  ],
+  "author": "Vi+ <vitaliyy@gmail.com>",
+  "dependencies": {
+    "open": "*",
+    "socket.io-client": "*",
+    "minimist": "*",
+    "toml": "*",
+    "file-type": "*",
+    "read-chunk": "*",
+    "crypto-js": "*",
+    "lowdb": "*",
+    "readline": "*"
+  },
+  "devDependencies": {
+    "coffeescript": "^1.10",
+    "js2coffee": "^2.2.0",
+    "pkg": "*"
+  },
+  "bin": "client.js"
+}
