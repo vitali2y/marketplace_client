@@ -8,7 +8,7 @@ fs = require "fs"
 readChunk = require "read-chunk"
 fileType = require "file-type"
 md5 = require "crypto-js/md5"
-open = require "open"
+opn = require "opn"
 path = require "path"
 toml = require "toml"
 ioClient = require "socket.io-client"
@@ -26,6 +26,9 @@ process.stdin.on 'data', (chunk) ->
   return
 process.stdin.on 'end', ->
   cfg = toml.parse(cfgPlainText)
+  if Object.keys(cfg).length == 0
+    console.log 'empty config from stdin, client stopped'
+    process.exit -2
   cfg.user.id = md5(cfg.user.name).toString()
   # private ledger
   ledger = low(new FileSync(cfg.ledger.ledger))
@@ -99,10 +102,10 @@ process.stdin.on 'end', ->
 
   # opening the marketplace on web UI under "logged in" buyer only
   if cfg.user.mode == 'buyer'
-    console.log "opening marketplace's web UI for #{cfg.user.name} buyer"
+    console.log "trying to open http://#{cfg.servers.demo.uri}/?#{cfg.user.id} marketplace's web UI for #{cfg.user.name} buyer"
     if /^win/.test process.platform
-      open "http://#{cfg.servers.demo.uri}/?#{cfg.user.id}", "chrome"
+      opn "http://#{cfg.servers.demo.uri}/?#{cfg.user.id}", app: "chrome"
     else
-      open "http://#{cfg.servers.demo.uri}/?#{cfg.user.id}", "chromium-browser"
+      opn "http://#{cfg.servers.demo.uri}/?#{cfg.user.id}", app: "chromium-browser"
   else
     console.log "not opening marketplace's web UI for this seller (for buyers only)"

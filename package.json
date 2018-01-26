@@ -17,15 +17,15 @@
   ],
   "author": "Vi+ <vitaliyy@gmail.com>",
   "dependencies": {
-    "open": "*",
-    "socket.io-client": "*",
-    "minimist": "*",
-    "toml": "*",
-    "file-type": "*",
-    "read-chunk": "*",
     "crypto-js": "*",
+    "file-type": "*",
     "lowdb": "*",
-    "readline": "*"
+    "minimist": "*",
+    "opn": "*",
+    "read-chunk": "*",
+    "readline": "*",
+    "socket.io-client": "*",
+    "toml": "*"
   },
   "devDependencies": {
     "coffeescript": "^1.10",
