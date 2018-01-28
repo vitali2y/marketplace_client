@@ -57,9 +57,19 @@ process.stdin.on 'end', ->
       list.forEach (file) ->
         fs.stat data.stores.root + path.sep + file, (err, stat) ->
           item = {}
-          [ item.id, item.name, item.mime, item.ts, item.size, item.price ] =
-            [ md5(file).toString(), file, fileType(readChunk.sync(data.stores.root + path.sep + file, 0, 4100)).mime,
+          [ item.id, item.name, item.mime, item.type, item.ts, item.size, item.price ] =
+            [ md5(file).toString(), file, fileType(readChunk.sync(data.stores.root + path.sep + file, 0, 4100)).mime, undefined,
             stat.ctime, stat.size, parseInt(Math.random() * 100) ]
+          item.type = "question-circle-o"
+          switch item.mime.split("/")[0]
+            when "video"
+              item.type = "file-video-o"
+            when "audio"
+              item.type = "file-audio-o"
+            when "text"
+              item.type = "file-text-o"
+            when "image"
+              item.type = "picture-o"
           items.push item
       data.stores.items = items
 
