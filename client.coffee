@@ -36,7 +36,6 @@ process.stdin.on 'end', ->
   # private wallet
   wallet = low(new FileSync(cfg.wallet.wallet))
   _w = wallet.value()
-  console.log 'wallet=', _w
   if not (_w.coins? and _w.address?)
     console.log "broken #{cfg.wallet.wallet}? client stopped"
     process.exit -1
@@ -80,23 +79,23 @@ process.stdin.on 'end', ->
   skt = ioClient.connect("http://#{cfg.servers.demo.uri}")
 
   # notification about a new client
-  skt.emit 'new_client', data: data
+  skt.emit 'new-client', data: data
 
   # getting confirmation from marketplace about connected client
-  skt.on 'new_client_connected', (data) ->
-    console.log 'new_client_connected:', data.data.user.email
+  skt.on 'new-client-connected', (data) ->
+    console.log 'on new-client-connected:', data.data.user.email
     return
 
   # getting broadcast message about a new transaction from marketplace
-  skt.on 'transaction_broadcasted', (data) ->
-    console.log 'transaction_broadcasted:', data
+  skt.on 'transaction-broadcasted', (data) ->
+    console.log 'on transaction-broadcasted:', data
     if cfg.user.address in data.parties
-      skt.emit 'get_transaction', data.id
+      skt.emit 'get-transaction', data.id
     return
 
   # finally getting the transaction
-  skt.on 'get_transaction_returned', (data) ->
-    console.log 'get_transaction_returned:', data
+  skt.on 'get-transaction-returned', (data) ->
+    console.log 'on get-transaction-returned:', data
     if cfg.user.mode == 'seller'
       wallet.update('coins', (n) ->
         n += data.price
