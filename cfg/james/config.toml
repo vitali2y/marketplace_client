@@ -15,11 +15,15 @@ mode  = "seller"   # "seller" or "buyer", mandatory field
 
 
 [wallet]
-wallet = "wallet_james.json"
+wallet = "wallet.json"
+
+
+[latest]
+latest = "latest.json"
 
 
 [ledger]
-ledger = "ledger_james.json"
+ledger = "blockchain/private"
 
 
 [seller]

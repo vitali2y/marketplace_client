@@ -1,8 +1,8 @@
 # Client's config file
 
 [user]
-name  = "Ragnar Lothbrok"
-email = "ragnar@kattegat.org"
+name  = "Tom"
+email = "tom@tom.marketplace.com"
 mode  = "seller"   # "seller" or "buyer", mandatory field
 
 
@@ -15,16 +15,20 @@ mode  = "seller"   # "seller" or "buyer", mandatory field
 
 
 [wallet]
-wallet = "wallet_ragnar.json"
+wallet = "wallet.json"
+
+
+[latest]
+latest = "latest.json"
 
 
 [ledger]
-ledger = "ledger_ragnar.json"
+ledger = "blockchain/private"
 
 
 [seller]
   api_id = "Z77wU"
   api_key = "P23P7jlDx4RHrmmQsyA23HBhLkWQpp"
   [seller.0]
-    name = "Ragnar Lothbrok Stylish Accessories"
-    root = "store_ragnar"
+    name = "Tom's Digital Store"
+    root = "store_tom"

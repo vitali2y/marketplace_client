@@ -18,5 +18,9 @@ mode  = "buyer"   # "seller" or "buyer", mandatory field
 wallet = "wallet.json"
 
 
+[latest]
+latest = "latest.json"
+
+
 [ledger]
-ledger = "ledger.json"
+ledger = "blockchain/private"

@@ -1,14 +1,14 @@
 {
   "name": "marketplace_client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Marketplace Client",
   "scripts": {
     "postinstall": "./scripts/postinstall.sh; exit $?",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "alice": "(cd ./dist/linux; cat ./config.toml | ./../../node_modules/.bin/coffee ./../../client.coffee; cd -)",
-    "bob": "(cd ./dist/linux; cat ./config_bob.toml | ./../../node_modules/.bin/coffee ./../../client.coffee; cd -)",
-    "james": "(cd ./dist/linux; cat ./config_james.toml | ./../../node_modules/.bin/coffee ./../../client.coffee; cd -)",
-    "ragnar": "(cd ./dist/linux; cat ./config_ragnar.toml | ./../../node_modules/.bin/coffee ./../../client.coffee; cd -)",
+    "alice": "(cd ./dist/linux/alice; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "bob": "(cd ./dist/linux/bob; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "james": "(cd ./dist/linux/james; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "tom": "(cd ./dist/linux/tom; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "release_bin": "./scripts/release_bin.sh; if [ $? -ne 0 ]; then echo 'failed!!!'; exit 9; fi; echo 'client released'"
   },
   "keywords": [
@@ -18,13 +18,13 @@
   ],
   "author": "Vi+ <vitaliyy@gmail.com>",
   "dependencies": {
-    "crypto-js": "^3.1.8",
+    "crypto-js": "^3.1.9-1",
     "file-type": "^7.5.0",
+    "leveldown": "^3.0.0",
+    "levelup": "^2.0.2",
     "lowdb": "^1.0.0",
-    "minimist": "^1.2.0",
     "opn": "^5.2.0",
     "read-chunk": "^2.1.0",
-    "readline": "^1.3.0",
     "socket.io-client": "^2.0.4",
     "toml": "^2.3.3"
   },

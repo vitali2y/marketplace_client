@@ -13,6 +13,10 @@ path = require "path"
 toml = require "toml"
 ioClient = require "socket.io-client"
 low = require "lowdb"
+levelup = require "levelup"
+leveldown = require "leveldown"
+Ledger = require "./ledger"
+
 # TODO: to use FileAsync
 FileSync = require "lowdb/adapters/FileSync"
 
@@ -30,9 +34,11 @@ process.stdin.on 'end', ->
     console.log 'empty config from stdin, client stopped'
     process.exit -2
   cfg.user.id = md5(cfg.user.name).toString()
+  # latest tx
+  latest = low(new FileSync(cfg.latest.latest))
+  latest.defaults(latest: { id: "genesis", ts: Math.floor((new Date).getTime() / 1000) }).write()
   # private ledger
-  ledger = low(new FileSync(cfg.ledger.ledger))
-  ledger.defaults(ledger: []).write()
+  ledger = new Ledger(cfg.ledger.ledger, latest)
   # private wallet
   wallet = low(new FileSync(cfg.wallet.wallet))
   _w = wallet.value()
@@ -43,7 +49,7 @@ process.stdin.on 'end', ->
   console.log "well, #{cfg.user.name}'s configuration:", cfg
   data = { user: cfg.user }
 
-  # reading seller's directory
+  # scanning store's directory for files for marketplace
   if cfg.user.mode == 'seller'
     data.stores = cfg.seller[0]   # one store per seller for now
     data.stores.id = md5(data.stores.name).toString()
@@ -89,7 +95,7 @@ process.stdin.on 'end', ->
   # getting broadcast message about a new transaction from marketplace
   skt.on 'transaction-broadcasted', (data) ->
     console.log 'on transaction-broadcasted:', data
-    if cfg.user.address in data.parties
+    if cfg.user.address in data.parties   # confirmation of own involvement
       skt.emit 'get-transaction', data.id
     return
 
@@ -104,10 +110,14 @@ process.stdin.on 'end', ->
       wallet.update('coins', (n) ->
         n -= data.price
       ).write()
-    ledger.get("ledger").push(data).write()
-    console.log "wallet/ledger magic is done"
-    # TODO: to send confirmation about finishing the transaction
-    return
+    ledger.put(data.id, data, (rslt, txId, txAll) ->
+      if rslt
+        console.log 'failed to write to private ledger:', rslt
+        return
+      console.log "success: txId:", txId, "txAll:", txAll
+      if cfg.user.mode == 'buyer'
+        skt.emit 'success-transaction', txId, txAll   # buyer sends final confirmation about successful transaction
+    )
 
   # opening the marketplace on web UI under "logged in" buyer only
   if cfg.user.mode == 'buyer'
