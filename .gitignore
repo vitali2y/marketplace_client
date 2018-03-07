@@ -1,3 +1,13 @@
 node_modules
 package-lock.json
 build
+./dist/windows/alice/config.toml
+./dist/windows/alice/wallet.json
+./dist/windows/bob/config.toml
+./dist/windows/bob/wallet.json
+./dist/windows/tom/config.toml
+./dist/windows/tom/wallet.json
+./dist/windows/james/config.toml
+./dist/windows/james/wallet.json
+./dist/windows/cl-1/config.toml
+./dist/windows/cl-1/wallet.json

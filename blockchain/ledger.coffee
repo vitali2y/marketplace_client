@@ -1,13 +1,14 @@
 #
-# Marketplace Client's Private Ledger
+# Marketplace Client's private ledger
 #
 
+# TODO: how avoid CryptoJS?
 CryptoJS = require "crypto-js"
 levelup = require "levelup"
 leveldown = require "leveldown"
 
 
-# TODO: class Ledger extends levelup
+# TODO: class Ledger extends ...
 class Ledger
 
   constructor: (root, @latest) ->
@@ -20,8 +21,8 @@ class Ledger
     )
 
 
-
   get: (key, cb) ->
+    console.log "get (#{key}, <cb>)"
     @ledger.get(key, (err, val) ->
       if err
         if err.notFound
@@ -30,10 +31,24 @@ class Ledger
           console.log('failed to read from private ledger:', err)
           cb err
         return
-      console.log "get: val=", val.toString()
       cb null, JSON.parse(val)
     )
 
+
+  # gathering all txs for displaying under "My Transactions"
+  getAll: (txId, cb) ->
+    txAll = []
+    @ledger.createReadStream().on('data', (data) ->
+      _tx = {}
+      _d = JSON.parse(data.value.toString())
+      for v of _d
+        _tx[v] = _d[v]
+      txAll.push(_tx) 
+      return
+    ).on 'end', ->
+      console.log "current ledger:", txAll
+      cb null, txId, txAll
+      return
 
 
   put: (key, val, cb) ->
@@ -48,32 +63,20 @@ class Ledger
       val.buyer = null
       val.store_id = null
       val.price = 0
+      val.ts = Math.floor((new Date).getTime() / 1000)
 
     val.prev_id = @latest.get("latest").value()["id"]
-    val.ts = Math.floor((new Date).getTime() / 1000)
     val.hash = _calculateHash val
-    console.log "saving:", JSON.stringify(val)
+    console.log "saving tx:", JSON.stringify(val)
     @ledger.put(key, JSON.stringify(val), (err) =>
       if err
         console.log('failed to write to private ledger:', err)
         cb err
         return
       @latest.get("latest").assign({ id: key, ts: Math.floor((new Date).getTime() / 1000) }).write()
-      console.log "new latest:", @latest.get("latest").value()
+      console.log "new latest tx id:", @latest.get("latest").value()
 
-      # gathering all txs under "My Transactions"
-      txAll = []
-      @ledger.createReadStream().on('data', (data) ->
-        _tx = {}
-        _d = JSON.parse(data.value.toString())
-        for v of _d
-          _tx[v] = _d[v]
-        txAll.push(_tx) 
-        return
-      ).on 'end', ->
-        console.log "current ledger:", txAll
-        cb null, key, txAll
-        return
+      @getAll key, cb
     )
 
 

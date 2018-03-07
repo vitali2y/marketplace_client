@@ -1,9 +1,9 @@
 # Client's config file
 
 [user]
-name  = "James"
-email = "james@middleofnowhere.org"
-mode  = "seller"   # "seller" or "buyer" or "witness", mandatory field
+name  = "CL-1"
+email = "cl1@tutova.org"
+mode  = "witness"   # "seller" or "buyer" or "witness", mandatory field
 
 
 [marketplace]
@@ -26,11 +26,3 @@ latest = "latest.json"
 
 [ledger]
 ledger = "blockchain/private"
-
-
-[seller]
-  api_id = "n2EPj"
-  api_key = "J2NZc67cnJoqrM6R3UCdjhAVfrjXZk"
-  [seller.0]
-    name = "James @ Cloud Shop"
-    root = "store_james"
