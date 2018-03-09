@@ -82,15 +82,12 @@ process.stdin.on 'end', ->
           console.log "trying to open http://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name}"
           if /^win/.test process.platform
             opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chrome"
-          else
+          if /^darwin/.test process.platform
+            opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "google chrome"
+          if /^linux/.test process.platform
             opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chromium-browser"
         else
           console.log "by default do not open marketplace's web UI for #{cfg.user.mode}, but for buyer only"
-      else
-        console.log "error:", JSON.stringify(err), 'resp:', resp
-        console.log "app stopped"
-        process.exit -7
-ode}, but for buyer only"
       else
         console.log "error:", JSON.stringify(err), 'resp:', resp
         console.log "app stopped"

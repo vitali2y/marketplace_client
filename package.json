@@ -5,11 +5,11 @@
   "scripts": {
     "postinstall": "./scripts/postinstall.sh; exit $?",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "alice": "(cd ./dist/linux/alice; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
-    "bob": "(cd ./dist/linux/bob; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
-    "james": "(cd ./dist/linux/james; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
-    "tom": "(cd ./dist/linux/tom; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
-    "cl-1": "(cd ./dist/linux/cl-1; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "alice": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/alice; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "bob": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/bob; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "james": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/james; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "tom": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/tom; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
+    "cl-1": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/cl-1; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "release_bin": "./scripts/release_bin.sh; if [ $? -ne 0 ]; then echo 'failed!!!'; exit 9; fi; echo 'client released'"
   },
   "keywords": [
@@ -46,16 +46,6 @@
     "peer-id": "^0.10.6",
     "peer-info": "^0.11.6",
     "pull-pushable": "^2.2.0",
-    "pull-stream": "^3.6.2"
-  },
-  "devDependencies": {
-    "coffeescript": "^2.2.2",
-    "js2coffee": "^2.2.0",
-    "pkg": "^4.3.0"
-  },
-  "bin": "client.js"
-}
-shable": "^2.2.0",
     "pull-stream": "^3.6.2"
   },
   "devDependencies": {
