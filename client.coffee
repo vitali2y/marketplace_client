@@ -90,3 +90,8 @@ process.stdin.on 'end', ->
         console.log "error:", JSON.stringify(err), 'resp:', resp
         console.log "app stopped"
         process.exit -7
+ode}, but for buyer only"
+      else
+        console.log "error:", JSON.stringify(err), 'resp:', resp
+        console.log "app stopped"
+        process.exit -7

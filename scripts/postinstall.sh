@@ -6,3 +6,6 @@ mkdir ./dist/windows/bob/store_bob ./dist/windows/james/store_james ./dist/windo
 (cd ./cfg; for f in ./*; do cp $f/* ../dist/windows/$f; done; cd -)
 (cd ./dist/linux; mkdir ./alice/blockchain ./bob/blockchain ./james/blockchain ./tom/blockchain; cd -)
 RED='\033[0;31m'; GREEN='\033[0;32m'; NOCOLOR='\033[0m'; echo -e "${RED}Attention:${GREEN} do not forget to put preliminary some files into 'stores' ('store_bob', 'store_james', and 'store_tom') dirs!${NOCOLOR}"
+d -)
+
+RED='\033[0;31m'; GREEN='\033[0;32m'; NOCOLOR='\033[0m'; echo -e "${RED}Attention:${GREEN} do not forget to put preliminary some files into 'stores' ('store_bob', 'store_james', and 'store_tom') dirs!${NOCOLOR}"

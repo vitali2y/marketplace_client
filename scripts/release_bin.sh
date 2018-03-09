@@ -42,3 +42,13 @@ echo "... and finally a buyer:"
 echo -e "${GREEN}client_alice.bat${NOCOLOR}"
 
 echo "open http://127.0.0.1:3000/?QmdFdWtiC9HdNWvRH3Cih9hJhLvRZmsDutz549s25CtQ61"
+echo -e "@ Winduz:"
+echo "Before running just copy both client-win-x86.exe and leveldown.node into every user's folder under ./dist/windows folder"
+echo "run sellers first:"
+echo -e "${GREEN}client_bob.bat client_james.bat client_tom.bat${NOCOLOR}"
+echo "and:"
+echo -e "${GREEN}client_cl-1.bat${NOCOLOR}"
+echo "... and finally a buyer:"
+echo -e "${GREEN}client_alice.bat${NOCOLOR}"
+
+echo "open http://127.0.0.1:3000/?QmdFdWtiC9HdNWvRH3Cih9hJhLvRZmsDutz549s25CtQ61"
