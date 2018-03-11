@@ -12,8 +12,6 @@ uri = "127.0.0.1:3000"
 
 [[rendezvous]]
 uri = "/dns4/localhost/tcp/9090/ws/p2p-websocket-star"
-[[rendezvous]]
-uri = "/dns4/ws-star-signal-4.servep2p.com/tcp/443/wss/p2p-websocket-star"
 
 
 [wallet]

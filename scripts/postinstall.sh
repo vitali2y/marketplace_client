@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#
+# Postinstall script
+#
+
 mkdir ./dist/linux/bob/store_bob ./dist/linux/james/store_james ./dist/linux/tom/store_tom
 mkdir ./dist/darwin/bob/store_bob ./dist/darwin/james/store_james ./dist/darwin/tom/store_tom
 mkdir ./dist/windows/bob/store_bob ./dist/windows/james/store_james ./dist/windows/tom/store_tom

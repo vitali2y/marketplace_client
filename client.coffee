@@ -2,8 +2,6 @@
 # Marketplace Client
 #
 
-console.log 'marketplace client is starting...'
-
 fs = require "fs"
 readChunk = require "read-chunk"
 fileType = require "file-type"
@@ -79,7 +77,7 @@ process.stdin.on 'end', ->
 
         # opening the web UI of marketplace under "logged in" buyer only
         if cfg.user.mode == 'buyer'
-          console.log "trying to open http://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name}"
+          console.log "trying to open http://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name} under Chrome/Chromium"
           if /^win/.test process.platform
             opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chrome"
           if /^darwin/.test process.platform

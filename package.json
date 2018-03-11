@@ -3,14 +3,15 @@
   "version": "0.0.3",
   "description": "Marketplace Client",
   "scripts": {
-    "postinstall": "./scripts/postinstall.sh; exit $?",
+    "clean": "rm -rf ./dist/*/*/latest.json ./dist/*/*/blockchain/private ./dist/*/*/client-* ./build",
+    "postinstall": "npm run clean && ./scripts/postinstall.sh; exit $?",
     "test": "echo \"Error: no test specified\" && exit 1",
     "alice": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/alice; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "bob": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/bob; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "james": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/james; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "tom": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/tom; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
     "cl-1": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/cl-1; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
-    "release_bin": "./scripts/release_bin.sh; if [ $? -ne 0 ]; then echo 'failed!!!'; exit 9; fi; echo 'client released'"
+    "release": "npm run clean && ./scripts/release.sh; if [ $? -ne 0 ]; then echo 'failed!!!'; exit 9; fi; echo 'client released'"
   },
   "keywords": [
     "decentralized",
@@ -51,7 +52,8 @@
   "devDependencies": {
     "coffeescript": "^2.2.2",
     "js2coffee": "^2.2.0",
-    "pkg": "^4.3.0"
+    "pkg": "^4.3.0",
+    "json": "^9.0.6"
   },
   "bin": "client.js"
 }
