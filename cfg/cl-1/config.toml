@@ -1,9 +1,9 @@
 # Client's config file
 
 [user]
-name  = "Alice"
-email = "alice@wonderland.com"
-mode  = "buyer"   # "seller" or "buyer" or "witness", mandatory field
+name  = "CL-1"
+email = "cl1@tutova.org"
+mode  = "witness"   # "seller" or "buyer" or "witness", mandatory field
 
 
 [marketplace]

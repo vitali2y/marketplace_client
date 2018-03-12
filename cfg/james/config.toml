@@ -3,15 +3,15 @@
 [user]
 name  = "James"
 email = "james@middleofnowhere.org"
-mode  = "seller"   # "seller" or "buyer", mandatory field
+mode  = "seller"   # "seller" or "buyer" or "witness", mandatory field
 
 
-[servers]
-  [servers.demo]
-  uri = "127.0.0.1:3000"
+[marketplace]
+uri = "127.0.0.1:3000"
 
-#  [servers.production]
-#  uri = [ "marketplace.io" ]
+
+[[rendezvous]]
+uri = "/dns4/localhost/tcp/9090/ws/p2p-websocket-star"
 
 
 [wallet]
@@ -30,5 +30,5 @@ ledger = "blockchain/private"
   api_id = "n2EPj"
   api_key = "J2NZc67cnJoqrM6R3UCdjhAVfrjXZk"
   [seller.0]
-    name = "James's Online Store"
+    name = "James @ Cloud Shop"
     root = "store_james"

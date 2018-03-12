@@ -3,15 +3,15 @@
 [user]
 name  = "Tom"
 email = "tom@tom.marketplace.com"
-mode  = "seller"   # "seller" or "buyer", mandatory field
+mode  = "seller"   # "seller" or "buyer" or "witness", mandatory field
 
 
-[servers]
-  [servers.demo]
-  uri = "127.0.0.1:3000"
+[marketplace]
+uri = "127.0.0.1:3000"
 
-#  [servers.production]
-#  uri = [ "marketplace.io" ]
+
+[[rendezvous]]
+uri = "/dns4/localhost/tcp/9090/ws/p2p-websocket-star"
 
 
 [wallet]

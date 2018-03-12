@@ -1,3 +1,3 @@
-**Marketplace Client PoC**
+**Decentralized Marketplace Client (PoC)**
 
-See [Marketplace PoC](https://github.com/vitali2y/marketplace) for details.
+See [Decentralized Marketplace (PoC)](https://github.com/vitali2y/marketplace) for details.

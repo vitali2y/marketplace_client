@@ -1,0 +1,29 @@
+#
+# Marketplace protocol
+#
+
+# TODO: do we need to sync "PROTO_VERSION" with package.json's "version"?
+PROTO_VERSION = "0.0.3"
+
+
+PROTO_GET_MY_INFO =     "/info/#{PROTO_VERSION}"
+PROTO_GET_SELLER_INFO = "/seller/#{PROTO_VERSION}"
+PROTO_TX_STEP1 =        "/step1/#{PROTO_VERSION}"
+PROTO_TX_STEP2 =        "/step2/#{PROTO_VERSION}"
+PROTO_TX_STEP3 =        "/step3/#{PROTO_VERSION}"
+PROTO_TX_STEP4 =        "/step4/#{PROTO_VERSION}"
+PROTO_TX_STEP5 =        "/step5/#{PROTO_VERSION}"
+PROTO_TX_STEP6 =        "/step6/#{PROTO_VERSION}"
+PROTO_GET_ALL_TXS =     "/txs/#{PROTO_VERSION}"
+
+
+module.exports = 
+    PROTO_GET_MY_INFO:     PROTO_GET_MY_INFO
+    PROTO_GET_SELLER_INFO: PROTO_GET_SELLER_INFO
+    PROTO_TX_STEP1:        PROTO_TX_STEP1
+    PROTO_TX_STEP2:        PROTO_TX_STEP2
+    PROTO_TX_STEP3:        PROTO_TX_STEP3
+    PROTO_TX_STEP4:        PROTO_TX_STEP4
+    PROTO_TX_STEP5:        PROTO_TX_STEP5
+    PROTO_TX_STEP6:        PROTO_TX_STEP6
+    PROTO_GET_ALL_TXS:     PROTO_GET_ALL_TXS
