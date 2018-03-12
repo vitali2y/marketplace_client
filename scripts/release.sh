@@ -26,7 +26,7 @@ cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/linux
 # TODO: 'npm install leveldown' @ Windows
 
 # avoiding usage of local rendezvous server, but external one
-(cd ./dist && for c in ./*/*/config.toml; do sed -i '/\/dns4\/localhost\/tcp\//c\uri = "\/dns4\/ws-star-signal-4.servep2p.com\/tcp\/443\/wss\/p2p-websocket-star"' $c; done && cd -)
+(cd ./dist && for c in ./*/*/config.toml; do sed -i -e 's/.*\/dns4\/localhost\/tcp\/9090.*/uri = "\/dns4\/ws-star-signal-4.servep2p.com\/tcp\/443\/wss\/p2p-websocket-star"/' $c; done && cd -)
 
 GREEN='\033[0;32m'; NOCOLOR='\033[0m'
 echo "@ Linux & Mac OS X:"
