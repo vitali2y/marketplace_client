@@ -4,25 +4,31 @@
 # Script for preparing client's binary builds
 #
 
-mkdir ./build
+mkdir -p ./build
 
 cp ./package.json ./build
+
+MAJOR_VERSION=$(node -v | awk '{ split($0,v,"."); print substr(v[1], 2) }')
 
 (cd ./build &&
 mkdir -p util blockchain && ../node_modules/.bin/coffee -o . -c ../*.coffee && ../node_modules/.bin/coffee -o ./util -c ../util/*.coffee && ../node_modules/.bin/coffee -o ./blockchain -c ../blockchain/*.coffee &&
 # adding name, version number, and timestamp for output during booting
-cat ../package.json | ../node_modules/.bin/json -A -a description version | awk -F, 'BEGIN { "date +%y/%m/%d-%H:%M" | getline d } { print "console.log(\""$0" ("d") is starting...\");" }' > ./client.js.tmp && cat ./client.js >> ./client.js.tmp && mv ./client.js.tmp ./client.js &&
-APP_NAME="client-linux-x64.bin" && TARGET="node8-linux-x64" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
+cat ../package.json | ../node_modules/.bin/json -A -a description version | awk -F, 'BEGIN { "date +%y%m%d-%H%M" | getline d } { print "console.log(\""$0" ("d") is starting...\");" }' > ./client.js.tmp && cat ./client.js >> ./client.js.tmp && mv ./client.js.tmp ./client.js &&
+APP_NAME="client-linux-x64.bin" && TARGET="node"$MAJOR_VERSION"-linux-x64" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
 mv ./$APP_NAME ../dist/linux &&
-APP_NAME="client-macos-x64.bin" && TARGET="node8-macos-x64" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
+APP_NAME="client-macos-x64.bin" && TARGET="node"$MAJOR_VERSION"-macos-x64" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
 mv ./$APP_NAME ../dist/darwin &&
-APP_NAME="client-win-x86.exe" && TARGET="node8-win-x86" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
+APP_NAME="client-win-x86.exe" && TARGET="node"$MAJOR_VERSION"-win-x86" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
 mv ./$APP_NAME ../dist/windows &&
 cd -)
 if [ $? -ne 0 ]; then echo 'failed!!!'; cd -; exit 1; fi
 
-cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/linux
-# TODO: 'npm install leveldown' @ Mac OS X
+if [ "$(uname)" == "Linux" ]; then 
+    cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/linux
+fi
+if [ "$(uname)" == "Darwin" ]; then 
+    cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/darwin
+fi
 # TODO: 'npm install leveldown' @ Windows
 
 # avoiding usage of local rendezvous server, but external one
