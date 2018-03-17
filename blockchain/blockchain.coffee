@@ -2,10 +2,13 @@
 # Marketplace Client's public blockchain
 #
 
-# TODO: class Blockchain extends ...
-class Blockchain
+Storage = require "./storage"
 
-  constructor: ->
+
+class Blockchain extends Storage
+
+  constructor: (root) ->
+    super root + "/public"
 
 
 module.exports = Blockchain

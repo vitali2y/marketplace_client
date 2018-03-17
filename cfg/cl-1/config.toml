@@ -18,9 +18,5 @@ uri = "/dns4/localhost/tcp/9090/ws/p2p-websocket-star"
 wallet = "wallet.json"
 
 
-[latest]
-latest = "latest.json"
-
-
-[ledger]
-ledger = "blockchain/private"
+[blockchain]
+root = "blockchain"

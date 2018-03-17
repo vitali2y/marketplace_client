@@ -1,9 +1,9 @@
 {
   "name": "marketplace_client",
-  "version": "0.0.3",
-  "description": "Marketplace Client",
+  "version": "0.0.4",
+  "description": "Decentralized Marketplace Client (PoC)",
   "scripts": {
-    "clean": "rm -rf ./dist/*/*/latest.json ./dist/*/*/blockchain/private ./dist/*/*/client-* ./build",
+    "clean": "rm -rf ./dist/*/*/latest.json ./dist/*/*/blockchain/public ./dist/*/*/blockchain/private ./dist/*/client-* ./dist/*/*/client-* ./build",
     "postinstall": "npm run clean && ./scripts/postinstall.sh; exit $?",
     "test": "echo \"Error: no test specified\" && exit 1",
     "alice": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/alice; cat ./config.toml | ./../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",
