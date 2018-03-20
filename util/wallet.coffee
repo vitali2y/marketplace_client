@@ -19,7 +19,7 @@ class Wallet
 
 
   get: ->
-    @wallet # .value()
+    @wallet
 
 
 module.exports = Wallet

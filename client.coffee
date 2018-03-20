@@ -11,8 +11,8 @@ path = require "path"
 
 Core = require "./core"
 Ledger = require "./blockchain/ledger"
+Blockchain = require "./blockchain/blockchain"
 Config = require "./util/config"
-Latest = require "./util/latest"
 Peer = require "./util/peer"
 Wallet = require "./util/wallet"
 
@@ -31,9 +31,9 @@ process.stdin.on 'end', ->
       process.exit err
 
     user = { user: cfg.user }
-    latest = new Latest(cfg).get()
     wallet = new Wallet(cfg).get()
-    ledger = new Ledger(cfg.ledger.ledger, latest)
+    ledger = new Ledger(cfg.blockchain.root)
+    blockchain = new Blockchain(cfg.blockchain.root)
 
     # scanning store's directory for files for representing them on marketplace
     if cfg.user.mode == 'seller'
@@ -70,7 +70,7 @@ process.stdin.on 'end', ->
             items.push item
         user.stores.items = items
 
-    new Peer().start new Core(cfg, user, wallet, ledger), (err, resp) ->
+    new Peer().start new Core(cfg, user, wallet, ledger, blockchain), (err, resp) ->
       if err is null
         console.log "user", cfg.user.name, "(#{cfg.user.email}, #{resp}) as a", cfg.user.mode, "having",
           cfg.user.balance, "coins is connecting to", cfg.rendezvous[0].uri
@@ -78,6 +78,7 @@ process.stdin.on 'end', ->
         # opening the web UI of marketplace under "logged in" buyer only
         if cfg.user.mode == 'buyer'
           console.log "trying to open http://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name} under Chrome/Chromium"
+          console.log "refresh page in few secs if it will not appear!"
           if /^win/.test process.platform
             opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chrome"
           if /^darwin/.test process.platform

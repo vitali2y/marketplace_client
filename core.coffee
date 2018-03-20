@@ -4,7 +4,7 @@
 
 class Core
 
-  constructor: (@cfg, @user, @wallet, @ledger) ->
+  constructor: (@cfg, @user, @wallet, @ledger, @blockchain) ->
 
 
   getMyInfo: ->
@@ -38,66 +38,93 @@ class Core
     @witnessAddress
 
 
-  # witness manages transaction obtained from buyer
-  manageTxByWitness: (tx) ->
-    console.log "manageTxByWitness (#{tx})"
-
-    @ledger.put(tx.id, tx, (rslt, txId, txAll) ->
-      console.log "manageTxByWitness: rslt=", rslt, "txId=", txId, "txAll=", txAll
-      if rslt
-        console.log 'failed to write to private ledger:', rslt
+  # witness saves transaction obtained from buyer into private ledger
+  savePrivateTx: (tx, cb) ->
+    console.log "savePrivateTx (#{JSON.stringify tx}, <cb>)"
+    @ledger.put(tx, (err, txAll) ->
+      console.log "savePrivateTx: err=", err, "txId=", tx.id, "txAll=", txAll
+      if err
+        console.log 'failed to write to private ledger:', err
         return
-      console.log "success: txId:", txId, "txAll:", txAll
+      console.log "success: txId:", tx.id, "txAll:", txAll
+      cb err
     )
 
-    '{ "code": "0" }'
+
+  # witness saves transaction obtained from buyer into public blockchain
+  savePublicTx: (tx, cb) ->
+    console.log "savePublicTx (#{JSON.stringify tx}, <cb>)"
+    @blockchain.put(tx, (err, txAll) ->
+      console.log "savePublicTx: err=", err, "txId=", tx.id, "txAll=", txAll
+      if err
+        console.log 'failed to write to public blockchain:', err
+        return
+      console.log "success: txId:", tx.id, "txAll:", txAll
+      cb err
+    )
 
 
   proceedTxByBuyer: (tx, cb) ->
     console.log "proceedTxByBuyer (#{tx}, <cb>)"
     tx = JSON.parse tx
-
+    
+    # updating buyer's wallet
     @wallet.update('coins', (n) ->
-      console.log 'n=', n
       n -= tx.price
     ).write()
 
-    @ledger.put(tx.id, tx, (rslt, txId, txAll) ->
-      console.log "proceedTxByBuyer: rslt=", rslt, "txId=", txId, "txAll=", txAll
-      if rslt
-        console.log 'failed to write to private ledger:', rslt
+    @ledger.put(tx, (err, txAll) ->
+      if err
+        console.log 'failed to write to private ledger:', err
         return
-      console.log "success: txId:", txId, "txAll:", txAll
-      cb("{ \"code\": \"0\", \"id\": \"#{txId}\" }")
+      console.log "success: txId:", tx.id, "txAll:", txAll
+      cb("{ \"code\": \"0\", \"id\": \"#{tx.id}\" }")
     )
-    '{ "code": "0" }'
 
 
   proceedTxBySeller: (tx, cb) ->
     console.log "proceedTxBySeller (#{tx}, <cb>)"
     tx = JSON.parse tx
-
+    
+    # updating seller's wallet
     @wallet.update('coins', (n) ->
-      console.log 'n=', n
       n += tx.price
     ).write()
 
-    @ledger.put(tx.id, tx, (rslt, txId, txAll) ->
-      console.log "proceedTxBySeller: rslt=", rslt, "txId=", txId, "txAll=", txAll
-      if rslt
-        console.log 'failed to write to private ledger:', rslt
+    @ledger.put(tx, (err, txAll) ->
+      if err
+        console.log 'failed to write to private ledger:', err
         return
-      console.log "success: txId:", txId, "txAll:", txAll
-      cb("{ \"code\": \"0\", \"id\": \"#{txId}\" }")
+      console.log "success: txId:", tx.id, "txAll:", txAll
+      cb("{ \"code\": \"0\", \"id\": \"#{tx.id}\" }")
     )
-    '{ "code": "0" }'
 
 
-  getAllTxsRequest: (something, cb) ->
-    console.log "getAllTxsRequest (<cb>)"
-    @ledger.getAll null, (rslt, txId, txAll) ->
-      console.log "getAllTxsRequest: rslt=", rslt, "txId=", txId, "txAll=", txAll
-      cb rslt, txId, txAll
+  getAllPrivateTxsRequest: (cb) ->
+    console.log "getAllPrivateTxsRequest (<cb>)"
+    @ledger.getAll (err, txAll) ->
+      console.log "getAllPrivateTxsRequest: err=", err, "txAll=", txAll
+      cb err, txAll
+
+
+  getAllPublicTxsRequest: (cb) ->
+    console.log "getAllPublicTxsRequest (<cb>)"
+    @blockchain.getAll (err, txAll) ->
+      console.log "getAllPublicTxsRequest: err=", err, "txAll=", txAll
+      cb err, txAll
+
+
+  syncNewPublicTx: (tx, cb) ->
+    console.log "syncNewPublicTx (#{JSON.stringify tx}, <cb>)"
+    tx = JSON.parse tx
+
+    @blockchain.put(tx, (err, txAll) ->
+      if err
+        console.log 'failed to write to public blockchain:', err
+        return
+      console.log "success: txId:", tx.id, "txAll:", txAll
+      cb("{ \"code\": \"0\", \"id\": \"#{tx.id}\" }")
+    )
 
 
 module.exports = Core

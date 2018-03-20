@@ -8,4 +8,4 @@ dist/*/*/blockchain/
 dist/*/client-*
 dist/*/leveldown.node
 dist/*/*/client-*
-dist/*/*/leveldown.node
+dist/*/*/store_*/

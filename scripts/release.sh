@@ -23,10 +23,10 @@ mv ./$APP_NAME ../dist/windows &&
 cd -)
 if [ $? -ne 0 ]; then echo 'failed!!!'; cd -; exit 1; fi
 
-if [ "$(uname)" == "Linux" ]; then 
+if [ "$(uname)" = "Linux" ]; then 
     cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/linux
 fi
-if [ "$(uname)" == "Darwin" ]; then 
+if [ "$(uname)" = "Darwin" ]; then 
     cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/darwin
 fi
 # TODO: 'npm install leveldown' @ Windows
