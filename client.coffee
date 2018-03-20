@@ -78,6 +78,7 @@ process.stdin.on 'end', ->
         # opening the web UI of marketplace under "logged in" buyer only
         if cfg.user.mode == 'buyer'
           console.log "trying to open http://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name} under Chrome/Chromium"
+          console.log "refresh page in few secs if it will not appear!"
           if /^win/.test process.platform
             opn "http://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chrome"
           if /^darwin/.test process.platform
