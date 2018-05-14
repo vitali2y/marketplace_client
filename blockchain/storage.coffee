@@ -2,7 +2,7 @@
 # Marketplace Client's levelup-based storage
 #
 
-# TODO: how avoid CryptoJS?
+# TODO: how about to avoid CryptoJS?
 CryptoJS = require "crypto-js"
 levelup = require "levelup"
 leveldown = require "leveldown"
@@ -15,7 +15,7 @@ class Storage
     @get("genesis", (err, tx) =>
       if err == null and tx == null
         @put({ id: "genesis" }, (err) =>    # genesis block init
-          console.log "genesis: err=", err
+          console.log "genesis (#{root}): err=", err
         )
     )
 
@@ -59,7 +59,6 @@ class Storage
       txAll.push(tx) 
       return
     ).on 'end', ->
-      # console.log "all transactions:", txAll
       cb null, txAll
       return
 
@@ -91,10 +90,10 @@ class Storage
         return
       )
       .on('data', (data) =>
-        console.log "latest:", data.key.toString(), '=', data.value.toString()
+        # console.log "latest:", data.key.toString(), '=', data.value.toString()
         tx.prev_id = data.key.toString()
         tx.hash = @calculateHash tx
-        console.log "saving tx:", JSON.stringify(tx)
+        # console.log "saving tx:", JSON.stringify(tx)
         _saveTx()
         return
       )

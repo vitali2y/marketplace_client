@@ -1,8 +1,8 @@
 # Client's config file
 
 [user]
-name  = "CL-1"
-email = "cl1@tutova.org"
+name  = "CL-2"
+email = "cl2@tutova.org"
 mode  = "witness"   # "seller" or "buyer" or "witness", mandatory field
 
 
