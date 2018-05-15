@@ -3,7 +3,6 @@ package-lock.json
 build/
 dist/*/*/*.toml
 dist/*/*/wallet.json
-dist/*/*/latest.json
 dist/*/*/blockchain/
 dist/*/client-*
 dist/*/leveldown.node
