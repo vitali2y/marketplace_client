@@ -59,7 +59,8 @@
     "coffeescript": "^2.3.0",
     "js2coffee": "^2.2.0",
     "pkg": "^4.3.0",
-    "json": "^9.0.6"
+    "json": "^9.0.6",
+    "wscat": "^2.1.1"
   },
   "bin": "client.js",
   "engines": {
