@@ -63,6 +63,7 @@ class Peer
         recipientId = PeerId.createFromB58String recipientPeerB58Id
         recipientPeerInfo = new PeerInfo(recipientId)
         console.log 'recipientPeerB58Id=', recipientPeerB58Id
+        # TODO: to sign transaction by private key before sending it
         clientNode.dialProtocol recipientPeerInfo, proto.PROTO_TRANSFER1, (err, connOut) =>
           if err is null
             pull pull.values([ JSON.stringify(tx) ]), connOut, pull.collect((err, connIn) =>
