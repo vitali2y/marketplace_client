@@ -4,8 +4,7 @@
   "description": "Marketplace Client (PoC)",
   "scripts": {
     "clean": "rm -rf ./dist/*/*/blockchain/public ./dist/*/*/blockchain/private ./dist/*/*/transferred/*  ./dist/*/*/purchased/* ./dist/*/client-* ./dist/*/*/client-* ./build",
-    "postinstall": "npm run clean && ./scripts/postinstall.sh; exit $?",
-    "set_dev": "./scripts/set_dev.sh",
+    "postinstall": "npm run clean && ./scripts/postinstall.sh",
     "set_prod": "./scripts/set_prod.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "alice": "(cd ./dist/$(uname -s | awk '{ print tolower($0) }')/alice; ../../../node_modules/.bin/coffee ./../../../client.coffee; cd -)",

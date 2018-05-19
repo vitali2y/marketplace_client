@@ -221,6 +221,7 @@ class Peer
             console.log "txs[#{cnt}] (for #{w} witness):", txs[cnt]
 
           # dialing to witnesses one-by-one with unique chunk's transaction to initiate the purchase
+          # TODO: randomly selected witnesses
           txs[0].witness.forEach (w, index) =>
             witnessId = PeerId.createFromB58String(w)
             witnessPeerInfo = new PeerInfo(witnessId)
