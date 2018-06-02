@@ -28,7 +28,6 @@ new Config().get (err, cfg) ->
     console.log "app stopped"
     process.exit err
 
-
   # default system dirs management
   if not fs.existsSync './blockchain'
     fs.mkdirSync './blockchain'
@@ -36,7 +35,6 @@ new Config().get (err, cfg) ->
     fs.mkdirSync './purchased'
   if cfg.user.mode == 'witness' and not fs.existsSync './transferred'
     fs.mkdirSync './transferred'
-
 
   user = { user: cfg.user }
   user.cwd = process.cwd()
@@ -63,17 +61,23 @@ new Config().get (err, cfg) ->
           console.log "user", cfg.user.name, "(#{cfg.user.email}, #{resp}) as a", cfg.user.mode, "having",
             cfg.user.balance, "coins is connecting to", cfg.rendezvous[0].uri
 
-          # opening the web UI of marketplace under "logged in" buyer only
-          if cfg.user.mode == 'buyer'
-            console.log "trying to open https://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name} under Chrome/Chromium"
-            if /^win/.test process.platform
-              opn "https://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chrome"
-            if /^darwin/.test process.platform
-              opn "https://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "google chrome"
-            if /^linux/.test process.platform
-              opn "https://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: "chromium-browser"
+          # opening the marketplace's web UI under "logged in" buyer only (if enabled)
+          if /^win/.test process.platform
+            bro = "chrome"
+          if /^darwin/.test process.platform
+            bro = "google chrome"
+          if /^linux/.test process.platform
+            bro = "chromium-browser"
+          if process.env.MARKETPLACE_BROWSER?
+            bro = process.env.MARKETPLACE_BROWSER
+          if bro == 'no'
+            console.log 'skip opening browser'
           else
-            console.log "by default do not open marketplace's web UI for #{cfg.user.mode}, but for buyer only"
+            if cfg.user.mode == 'buyer'
+              console.log "trying to open https://#{cfg.marketplace.uri}/?#{cfg.user.id} marketplace's web UI for buyer #{cfg.user.name} under '${bro}' browser"
+              opn "https://#{cfg.marketplace.uri}/?#{cfg.user.id}", app: bro
+            else
+              console.log "by default do not open marketplace's web UI for #{cfg.user.mode}, but for buyer only"
 
           # running local web server for purchased files
           # TODO: https://github.com/baalexander/node-portscanner for finding not busy port

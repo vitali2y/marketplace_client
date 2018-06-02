@@ -3,18 +3,32 @@
 #
 
 crypto = require "libp2p-crypto"
-WebSocket = require 'ws'
+WebSocket = require "ws"
 
 
 class WSService
 
   constructor: (@port, @globalEmitter) ->
-    @ws = undefined
+
+    # respond to wallet about finished transfer transaction
     @globalEmitter.on 'transfer-received', (tx) =>
       console.log 'on transfer-received:', tx
       @respOk { id: JSON.parse(tx).id }
 
+    # request to wallet for balance increasing
+    @globalEmitter.on 'increaseBalance', (tx) =>
+      console.log 'on increaseBalance:', tx
+      t = JSON.parse tx
+      @sendRaw { action: 'increaseBalance', id: t.id, amount: t.amount }
 
+    # request to wallet for balance decreasing
+    @globalEmitter.on 'decreaseBalance', (tx) =>
+      console.log 'on decreaseBalance:', tx
+      t = JSON.parse tx
+      @sendRaw { action: 'decreaseBalance', id: t.id, amount: t.amount }
+
+
+  # starting up the websockets service
   start: ->
     wss = new (WebSocket.Server)(port: @port)
     console.log 'websockets service is started up'
@@ -58,6 +72,11 @@ class WSService
 
   sendRaw: (data) ->
     console.log "sendRaw (#{JSON.stringify data})"
+    if @ws?
+      @ws.send JSON.stringify(data)
+
+
+  send: (data) ->
 
     # TODO: avoid duplication
     getUniqueId = ->
@@ -66,20 +85,19 @@ class WSService
     if data.action?
       data.data.id = getUniqueId()
     data.data.ts = Math.floor((new Date).getTime() / 1000)
-    if @ws?
-      @ws.send JSON.stringify(data)
+    @sendRaw data
 
 
   sendReq: (action, data) ->
-    @sendRaw { action: action, data: data }
+    @send { action: action, data: data }
 
 
   respOk: (data) ->
-    @sendRaw { code: 0, data: data }
+    @send { code: 0, data: data }
 
 
   respNg: (code, data) ->
-    @sendRaw { code: code, data: data }
+    @send { code: code, data: data }
 
 
 module.exports = WSService

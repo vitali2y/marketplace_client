@@ -7,11 +7,16 @@ readChunk = require "read-chunk"
 fileType = require "file-type"
 
 WSService = require "./util/wsservice"
+proto = require "./util/proto"
 
 
 class Core
 
   constructor: (@globalEmitter, @cfg, @user, @wallet, @ledger, @blockchain) ->
+    # for keeping the state
+    @user.state = {}
+    @user.state[proto.PROTO_BOOTSTRAP] = false
+
     # starting up the websockets-based API service
     # TODO: security:
     # http://simplyautomationized.blogspot.com/2015/09/5-ways-to-secure-websocket-rpi.html
@@ -131,13 +136,13 @@ class Core
 
   getAllPrivateTxsRequest: (cb) ->
     console.log "getAllPrivateTxsRequest (<cb>)"
-    @ledger.getAll (err, txAll) ->
+    @ledger.getAll "genesis", (err, txAll) ->
       cb err, txAll
 
 
   getAllPublicTxsRequest: (cb) ->
     console.log "getAllPublicTxsRequest (<cb>)"
-    @blockchain.getAll (err, txAll) ->
+    @blockchain.getAll "genesis", (err, txAll) ->
       cb err, txAll
 
 

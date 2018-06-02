@@ -40,6 +40,12 @@ class Peer
     return
 
 
+  getPeerInfoByConn: (conn) ->
+    # TODO: to find better way to get sender's address instead of this dirty hacking
+    q = JSON.stringify conn
+    return new PeerInfo(PeerId.createFromB58String(q[(q.search /"peerInfo":{"id":{"id":"Qm/)+24..(q.search /"peerInfo":{"id":{"id":"Qm/)+23+46]))
+
+
   start: (@core, cb) ->
     PeerId.createFromJSON require(process.cwd() + "/" + @core.cfg.wallet.wallet), (err, @clientId) =>
       if err
@@ -90,11 +96,7 @@ class Peer
         pull conn, pull.map((v) =>
           console.log "==>", protocol, 'v=', v.toString()
           @core.proceedTxBySeller JSON.parse(v.toString()), (err, rslt) =>
-            # TODO: find better way to get sender's address instead of this dirty hacking
-            q = JSON.stringify conn
-            senderPeerB58Id = q[(q.search /"peerInfo":{"id":{"id":"Qm/)+24..(q.search /"peerInfo":{"id":{"id":"Qm/)+23+46]
-            senderId = PeerId.createFromB58String senderPeerB58Id
-            senderPeerInfo = new PeerInfo(senderId)
+            senderPeerInfo = @getPeerInfoByConn conn
             clientNode.dialProtocol senderPeerInfo, proto.PROTO_TRANSFER2, (err, connOut) =>
               if err is null
                 pull pull.values([ v.toString() ]), connOut, pull.collect((err, connIn) =>
@@ -164,17 +166,16 @@ class Peer
             return JSON.stringify(@core.getWhoAreYou(clientNode.peerInfo.id.toB58String(), ipInfo.city + ', ' + ipInfo.country))
           ), conn
 
-        try
-          # TODO: 'Rate limit exceeded. Subscribe to a paid plan to increase your usage limits at http://ipinfo.io/pricing' ,
-          # https://github.com/fiorix/freegeoip as an alternative?
-          request 'https://ipinfo.io/json', (err, res, body) ->
+        # TODO: 'Rate limit exceeded. Subscribe to a paid plan to increase your usage limits at http://ipinfo.io/pricing' ,
+        # https://github.com/fiorix/freegeoip as an alternative?
+        request 'https://ipinfo.io/json', (err, res, body) ->
+          try
             ipInfo = JSON.parse body
-            callWRU ipInfo
-        catch err
-          console.log 'geo service error:', err
-          ipInfo =
-            city: '?'
-            country: '?'
+          catch err
+            console.log 'geo service error:', err
+            ipInfo =
+              city: '?'
+              country: '?'
           callWRU ipInfo
         return '{ "code": "772" }'
 
@@ -345,6 +346,10 @@ class Peer
               # TODO: to avoid this fixer workaround
               .pipe(fixer)
               .pipe(fs.createWriteStream('./purchased/' + fileName))
+
+            # restoring original file name
+            chunk.file_name = chunk.file_name[0..chunk.file_name.length-15]
+
             confirmAndNotify chunk
           else
             if fs.existsSync './purchased/' + fileName
@@ -371,6 +376,7 @@ class Peer
                 fs.appendFileSync './purchased/' + fileName, content
                 fs.unlinkSync os.tmpdir() + '/' + chunk.id + '.' + c
               fs.unlinkSync os.tmpdir() + '/' + chunk.id + '.lst'
+
               confirmAndNotify chunk
             else
               console.log 'not a time for chunks merging, have just', chunkAmount
@@ -486,6 +492,7 @@ class Peer
         discovPeerB58Id = peerDiscovered.id.toB58String()
         clientNode.dial peerDiscovered, (err, data) ->
           if err
+            console.log 'discovery: err=', err, 'data:', data
             cb err, data
           return
         return
@@ -499,12 +506,44 @@ class Peer
         startCnt = new Date()
         clientNode.dialProtocol peerConnected, proto.PROTO_WHORU, (err, connOut) =>
           if err is null
+            # TODO: how to avoid passing the dumb value?
             tx = { data: 'whoru' }
             pull pull.values(tx), connOut, pull.collect((err, connIn) =>
               console.log "ping #{@core.wallet.value().id}-#{connPeerB58Id}:", new Date() - startCnt
               console.log "<== #{proto.PROTO_WHORU}: err:", err, "connIn: '#{connIn.toString()}'"
               if err
                 console.log 'ouch, error'
+
+              # request for synchronization of public blockchain transactions with first connected witness node
+              # TODO: to sync only diff transactions, not all as here
+              if JSON.parse(connIn.toString()).mode == "witness" and not @core.user.state[proto.PROTO_BOOTSTRAP]
+                @core.user.state[proto.PROTO_BOOTSTRAP] = true
+                clientNode.dialProtocol peerConnected, proto.PROTO_GET_ALL_PUBLIC_TXS, (err, connOut) =>
+                  if err is null
+                    tx = { data: 'AllPublicTxs' }
+                    pull pull.values(tx), connOut, pull.collect((err, connIn) =>
+                      console.log "<== #{proto.PROTO_GET_ALL_PUBLIC_TXS}: err:", err, "connIn:", connIn.toString()
+                      if err
+                        cb err, connIn
+                        return
+
+                      # syncing public transactions
+                      txsOrg = JSON.parse connIn.toString()
+                      txs = []
+                      for t in txsOrg
+                        tx = {}
+                        tx.type = 'put'
+                        tx.key = t.id
+                        tx.value = JSON.stringify(t)
+                        txs.push tx
+                      @core.blockchain.storage.batch txs, (err) ->
+                        if err
+                          console.log 'ouch, err:', err
+                      @core.user.state[proto.PROTO_BOOTSTRAP] = false
+                    )
+                  else
+                    @ignoreNotSupported err, cb
+                    return '{ "code": "427" }'
             )
           else
             @ignoreNotSupported err, cb

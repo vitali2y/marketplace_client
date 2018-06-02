@@ -1,6 +1,6 @@
 {
   "name": "marketplace_client",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "Marketplace Client (PoC)",
   "scripts": {
     "clean": "rm -rf ./dist/*/*/blockchain/public ./dist/*/*/blockchain/private ./dist/*/*/transferred/*  ./dist/*/*/purchased/* ./dist/*/client-* ./dist/*/*/client-* ./build",
@@ -23,13 +23,14 @@
     "p2p",
     "PoC"
   ],
+  "homepage": "https://github.com/vitali2y/marketplace_client",
   "author": "Vi+ <vitaliyy@gmail.com>",
   "dependencies": {
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.3",
-    "file-type": "^7.6.0",
-    "leveldown": "^3.0.0",
-    "levelup": "^2.0.2",
+    "file-type": "^8.0.0",
+    "leveldown": "^4.0.1",
+    "levelup": "^3.0.1",
     "libp2p": "^0.18.0",
     "libp2p-crypto": "^0.12.1",
     "libp2p-floodsub": "^0.14.1",
@@ -38,7 +39,7 @@
     "libp2p-mplex": "^0.6.0",
     "libp2p-multiplex": "^0.5.1",
     "libp2p-railing": "^0.7.1",
-    "libp2p-secio": "^0.9.3",
+    "libp2p-secio": "^0.9.4",
     "libp2p-spdy": "^0.11.0",
     "libp2p-tcp": "^0.11.6",
     "libp2p-webrtc-star": "^0.13.4",
@@ -48,14 +49,14 @@
     "mitt": "^1.1.3",
     "opn": "^5.2.0",
     "peer-id": "^0.10.6",
-    "peer-info": "^0.11.6",
+    "peer-info": "^0.14.1",
     "pull-stream": "^3.6.2",
     "read-chunk": "^2.1.0",
     "toml": "^2.3.3",
     "wait": "^0.1.0"
   },
   "devDependencies": {
-    "coffeescript": "^2.3.0",
+    "coffeescript": "^2.3.1",
     "js2coffee": "^2.2.0",
     "pkg": "^4.3.0",
     "json": "^9.0.6",
