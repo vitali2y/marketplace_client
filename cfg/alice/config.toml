@@ -7,11 +7,15 @@ mode  = "buyer"   # "seller" or "buyer" or "witness", mandatory field
 
 
 [marketplace]
-uri = "127.0.0.1:3000"
+uri = "127.0.0.1:43443"
 
 
 [[rendezvous]]
-uri = "/dns4/localhost/tcp/9090/ws/p2p-websocket-star"
+uri = "/dns4/localhost/tcp/61617/ws/p2p-websocket-star"
+
+
+[api]
+port = 9091
 
 
 [wallet]
@@ -20,3 +24,7 @@ wallet = "wallet.json"
 
 [blockchain]
 root = "blockchain"
+
+
+[purchased]
+root = "purchased"

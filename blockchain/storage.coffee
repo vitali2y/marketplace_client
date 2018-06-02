@@ -2,7 +2,7 @@
 # Marketplace Client's levelup-based storage
 #
 
-# TODO: how avoid CryptoJS?
+# TODO: how about to avoid CryptoJS?
 CryptoJS = require "crypto-js"
 levelup = require "levelup"
 leveldown = require "leveldown"
@@ -15,7 +15,7 @@ class Storage
     @get("genesis", (err, tx) =>
       if err == null and tx == null
         @put({ id: "genesis" }, (err) =>    # genesis block init
-          console.log "genesis: err=", err
+          console.log "genesis (#{root}): err=", err
         )
     )
 
@@ -49,9 +49,12 @@ class Storage
 
 
   # gathering all txs for displaying under "My Transactions"
-  getAll: (cb) ->
+  getAll: (lastId, cb) ->
+    # console.log "getAll (#{lastId}, #{cb})"
+    opts =
+      lte: lastId
     txAll = []
-    @storage.createReadStream().on('data', (data) ->
+    @storage.createReadStream(opts).on('data', (data) ->
       tx = {}
       d = JSON.parse(data.value.toString())
       for v of d
@@ -59,31 +62,12 @@ class Storage
       txAll.push(tx) 
       return
     ).on 'end', ->
-      # console.log "all transactions:", txAll
       cb null, txAll
       return
 
 
-  # save transaction into the store
-  put: (tx, cb) ->
-    console.log "put (#{JSON.stringify(tx)}, <cb>)"
-    key = tx.id
-
-    _saveTx = =>
-      @storage.put(key, JSON.stringify(tx), (err) =>
-        if err
-          console.log('failed to write to storage:', err)
-          cb err
-          return
-        @getAll cb
-      )
-
-    if key == "genesis"
-      tx = @getGenesis()
-      _saveTx()
-      return
-
-    # getting id of the latest transaction
+  # to get id of the latest transaction
+  getLatestId: (cb) ->
     @storage.createReadStream({ limit: 1 })
       .on('error', (err) =>
         console.log 'storage error:', err
@@ -92,12 +76,32 @@ class Storage
       )
       .on('data', (data) =>
         console.log "latest:", data.key.toString(), '=', data.value.toString()
-        tx.prev_id = data.key.toString()
-        tx.hash = @calculateHash tx
-        console.log "saving tx:", JSON.stringify(tx)
-        _saveTx()
-        return
+        cb data.key.toString()
       )
+
+
+  saveTx: (tx, cb) ->
+    @storage.put(tx.id, JSON.stringify(tx), (err) =>
+      if err
+        console.log('failed to write to storage:', err)
+        cb err
+        return
+      @getAll "genesis", cb
+    )
+
+
+  # save transaction into the store
+  put: (tx, cb) ->
+    console.log "put (#{JSON.stringify(tx)}, <cb>)"
+    if tx.id == "genesis"
+      tx = @getGenesis()
+      @saveTx tx, cb
+      return
+    @getLatestId (idLatest) =>
+      tx.prev_id = idLatest
+      tx.hash = @calculateHash tx
+      @saveTx tx, cb
+      return
 
 
 module.exports = Storage

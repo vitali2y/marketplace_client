@@ -11,7 +11,9 @@ cp ./package.json ./build
 MAJOR_VERSION=$(node -v | awk '{ split($0,v,"."); print substr(v[1], 2) }')
 
 (cd ./build &&
-mkdir -p util blockchain && ../node_modules/.bin/coffee -o . -c ../*.coffee && ../node_modules/.bin/coffee -o ./util -c ../util/*.coffee && ../node_modules/.bin/coffee -o ./blockchain -c ../blockchain/*.coffee &&
+mkdir -p util blockchain service && ../node_modules/.bin/coffee -o . -c ../*.coffee && ../node_modules/.bin/coffee -o ./util -c ../util/*.coffee &&
+../node_modules/.bin/coffee -o ./service ../service/*.coffee &&
+../node_modules/.bin/coffee -o ./blockchain -c ../blockchain/*.coffee &&
 # adding name, version number, and timestamp for output during booting
 cat ../package.json | ../node_modules/.bin/json -A -a description version | awk -F, 'BEGIN { "date +%y%m%d-%H%M" | getline d } { print "console.log(\""$0" ("d") is starting...\");" }' > ./client.js.tmp && cat ./client.js >> ./client.js.tmp && mv ./client.js.tmp ./client.js &&
 APP_NAME="client-linux-x64.bin" && TARGET="node"$MAJOR_VERSION"-linux-x64" && echo $APP_NAME && ../node_modules/.bin/pkg --targets $TARGET --output ./$APP_NAME ./package.json &&
@@ -30,9 +32,6 @@ if [ "$(uname)" = "Darwin" ]; then
     cp ./node_modules/leveldown/build/Release/leveldown.node ./dist/darwin
 fi
 # TODO: 'npm install leveldown' @ Windows
-
-# avoiding usage of local rendezvous server, but external one
-(cd ./dist && for c in ./*/*/config.toml; do sed -i -e 's/.*\/dns4\/localhost\/tcp\/9090.*/uri = "\/dns4\/ws-star-signal-4.servep2p.com\/tcp\/443\/wss\/p2p-websocket-star"/' $c; done && cd -)
 
 GREEN='\033[0;32m'; NOCOLOR='\033[0m'
 echo "@ Linux & Mac OS X:"
@@ -53,4 +52,4 @@ echo "${GREEN}client_cl-1.bat${NOCOLOR}"
 echo "... and finally a buyer:"
 echo "${GREEN}client_alice.bat${NOCOLOR}"
 
-echo "open http://127.0.0.1:3000/?QmdFdWtiC9HdNWvRH3Cih9hJhLvRZmsDutz549s25CtQ61"
+echo "open https://127.0.0.1:43443/?QmdFdWtiC9HdNWvRH3Cih9hJhLvRZmsDutz549s25CtQ61"
